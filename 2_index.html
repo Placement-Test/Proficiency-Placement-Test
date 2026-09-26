@@ -1,0 +1,1041 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>English Placement Test · BBEC Exam Centre</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* =====================================================================
+   CONFIGURACIÓN — sólo hay que cambiar API_URL (y opcionalmente el logo)
+   ===================================================================== */
+const APP = {
+  API_URL: 'PEGA_AQUI_LA_URL_DE_TU_APPS_SCRIPT',   // termina en /exec
+  CENTER_LOGO_URL: ''                              // opcional: si se deja vacío usa el logo definido en Code.gs
+};
+</script>
+<style>
+:root{
+  --ink:#1B2A4A; --ink-2:#51607D; --paper:#F1F5FB; --card:#FFFFFF; --line:#D8E0EE;
+  --uoe:#6C4CF1; --reading:#0E9C9C; --listening:#F26B1D; --writing:#D6336C; --speaking:#239B45;
+  --warn:#F5A524; --danger:#D92D20; --ok:#239B45;
+  --display:'Baloo 2', 'Trebuchet MS', system-ui, sans-serif;
+  --body:'Atkinson Hyperlegible', 'Segoe UI', system-ui, sans-serif;
+  --r-lg:22px; --r-md:14px; --r-sm:10px;
+  --skill:var(--uoe);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:var(--body);color:var(--ink);background:var(--paper);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body.locked{user-select:none;-webkit-user-select:none}
+body.locked input,body.locked textarea{user-select:text;-webkit-user-select:text}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--skill);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);line-height:1.1;margin:0}
+
+/* ---------- barra superior ---------- */
+.bar{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:16px;padding:10px clamp(14px,3vw,28px)}
+.brand{display:flex;align-items:center;gap:14px;min-width:0;flex:1}
+.brand img{height:42px;max-width:150px;object-fit:contain}
+.brand .sep{width:1px;height:34px;background:var(--line)}
+.school{display:flex;align-items:center;gap:10px;min-width:0}
+.school span{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wordmark{display:flex;align-items:center;gap:9px}
+.wordmark b{font-family:var(--display);font-size:20px;letter-spacing:.5px}
+.wordmark small{display:block;font-size:11.5px;color:var(--ink-2);margin-top:-4px}
+[hidden]{display:none!important}
+.timer{font-family:var(--display);font-weight:800;font-size:24px;padding:4px 16px;border-radius:999px;background:var(--ink);color:#fff;
+  display:flex;align-items:center;gap:8px;font-variant-numeric:tabular-nums;min-width:118px;justify-content:center}
+.timer svg{width:20px;height:20px}
+.timer.warn{background:var(--warn);color:var(--ink)}
+.timer.danger{background:var(--danger);animation:beat 1s steps(2) infinite}
+@keyframes beat{50%{opacity:.75}}
+
+/* ---------- sellos de pasaporte (progreso) ---------- */
+.stamps{display:flex;justify-content:center;gap:clamp(8px,2.5vw,26px);padding:18px 12px 6px;flex-wrap:wrap}
+.stamp{--c:var(--line);width:82px;height:82px;border-radius:50%;border:3px dashed var(--c);display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:var(--ink-2);font-size:11.5px;font-weight:700;text-align:center;line-height:1.1;transform:rotate(var(--rot,0deg));background:var(--card);position:relative;transition:transform .25s}
+.stamp i{font-style:normal;font-size:24px;line-height:1;margin-bottom:3px;filter:grayscale(1);opacity:.6}
+.stamp.now{border-style:solid;color:var(--c);box-shadow:0 0 0 5px color-mix(in srgb,var(--c) 18%,transparent)}
+.stamp.now i{filter:none;opacity:1}
+.stamp.done{background:var(--c);border-style:solid;color:#fff}
+.stamp.done i{filter:none;opacity:1}
+.stamp.done::after{content:"✓";position:absolute;right:-4px;top:-4px;width:24px;height:24px;border-radius:50%;background:var(--ink);color:#fff;font-size:14px;display:grid;place-items:center}
+
+/* ---------- contenedores ---------- */
+main{max-width:860px;margin:0 auto;padding:18px clamp(14px,3vw,24px) 120px}
+main:has(.dash){max-width:1260px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);padding:clamp(18px,3vw,30px)}
+.stack>*+*{margin-top:18px}
+.muted{color:var(--ink-2)}
+.small{font-size:14px}
+.row{display:flex;gap:14px;flex-wrap:wrap}
+.row>*{flex:1 1 220px}
+
+/* ---------- portada ---------- */
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:22px;align-items:start}
+.hero h1{font-size:clamp(38px,6vw,62px);font-weight:800;letter-spacing:-.5px}
+.hero .lead{font-size:19px;margin:12px 0 18px;max-width:34ch}
+.facts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:0;padding:0;list-style:none}
+.facts li{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);padding:12px 14px;font-size:15px}
+.facts b{display:block;font-family:var(--display);font-size:22px}
+.skillsline{display:flex;gap:6px;margin-top:16px;flex-wrap:wrap}
+.chip{border-radius:999px;padding:4px 12px;font-size:13.5px;font-weight:700;color:#fff}
+
+label.f{display:block;font-weight:700;font-size:14.5px;margin-bottom:12px}
+label.f input,label.f select{display:block;width:100%;margin-top:5px;padding:11px 13px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:#fff;font-weight:400}
+label.f input:focus,label.f select:focus{border-color:var(--ink);outline:none}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:15px;margin:10px 0}
+.check input{width:20px;height:20px;margin-top:2px;accent-color:var(--ink)}
+.tests{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 4px}
+.meter{height:8px;border-radius:9px;background:var(--line);overflow:hidden;margin-top:8px}
+.meter div{height:100%;width:0;background:var(--speaking);transition:width .08s}
+
+.btn{border:0;border-radius:999px;padding:13px 26px;font-weight:700;cursor:pointer;background:var(--ink);color:#fff;display:inline-flex;align-items:center;gap:9px;justify-content:center}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn.skill{background:var(--skill)}
+.btn.big{font-size:19px;padding:16px 34px}
+.btn.sm{padding:8px 16px;font-size:14.5px}
+
+/* ---------- sección ---------- */
+.intro{border-left:8px solid var(--skill)}
+.intro .part{font-family:var(--display);font-size:15px;color:var(--skill);font-weight:700}
+.intro h2{font-size:clamp(28px,4vw,38px);font-weight:800}
+.intro .es{font-size:14.5px;color:var(--ink-2);margin-top:6px}
+
+.q{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);padding:18px 20px}
+.qhead{display:flex;gap:12px;align-items:flex-start}
+.qn{flex:0 0 32px;height:32px;border-radius:50%;background:color-mix(in srgb,var(--skill) 14%,#fff);color:var(--skill);font-weight:800;display:grid;place-items:center;font-family:var(--display)}
+.qtext{font-size:18px;padding-top:3px;flex:1}
+.opts{display:grid;gap:9px;margin-top:12px;padding-left:44px}
+.opt{display:flex;align-items:center;gap:12px;padding:11px 15px;border:1.5px solid var(--line);border-radius:var(--r-sm);cursor:pointer;background:#fff;text-align:left;width:100%}
+.opt .dot{flex:0 0 20px;height:20px;border-radius:50%;border:2px solid var(--line)}
+.opt:hover{border-color:color-mix(in srgb,var(--skill) 55%,var(--line))}
+.opt.on{border-color:var(--skill);background:color-mix(in srgb,var(--skill) 8%,#fff)}
+.opt.on .dot{border:6px solid var(--skill)}
+.pics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px;padding-left:44px}
+.pic{border:2px solid var(--line);border-radius:var(--r-md);background:#fff;padding:14px 8px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+.pic span:first-child{font-size:clamp(44px,8vw,64px);line-height:1.1}
+.pic span:last-child{font-size:14.5px;color:var(--ink-2)}
+.pic.on{border-color:var(--skill);background:color-mix(in srgb,var(--skill) 9%,#fff);box-shadow:0 0 0 3px color-mix(in srgb,var(--skill) 25%,transparent)}
+.gapinput{display:inline-block;width:10.5ch;padding:3px 8px;margin:0 4px;border:none;border-bottom:3px solid var(--skill);background:color-mix(in srgb,var(--skill) 7%,#fff);border-radius:6px 6px 0 0;font-weight:700;text-align:center}
+.gapinput:focus{outline:none;background:color-mix(in srgb,var(--skill) 15%,#fff)}
+.hint{margin-left:auto;font-family:var(--display);font-weight:800;border:2px solid var(--skill);color:var(--skill);border-radius:8px;padding:0 10px;height:32px;display:flex;align-items:center;white-space:nowrap}
+
+/* textos de lectura */
+.notice{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;background:#FFFDF4;border:2px solid #EADFB5;border-radius:var(--r-md);padding:16px 18px;margin-bottom:12px}
+.notice .emo{font-size:46px}
+.notice p{margin:0;white-space:pre-line;font-weight:700;font-size:17.5px}
+.article{background:#fff;border:1px solid var(--line);border-radius:var(--r-md);padding:20px 22px;margin-bottom:12px}
+.article .top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.article .top span{font-size:40px}
+.article h3{font-size:24px}
+.article p{margin:0 0 12px;max-width:68ch}
+
+/* listening */
+.player{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:color-mix(in srgb,var(--listening) 9%,#fff);border:1.5px solid color-mix(in srgb,var(--listening) 35%,#fff);border-radius:var(--r-md);padding:12px 16px;margin-bottom:12px}
+.playbtn{width:56px;height:56px;border-radius:50%;border:0;background:var(--listening);color:#fff;display:grid;place-items:center;cursor:pointer}
+.playbtn svg{width:24px;height:24px}
+.playbtn:disabled{background:#C9CFDB;cursor:not-allowed}
+.playing .playbtn{animation:ring 1.2s ease-out infinite}
+@keyframes ring{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--listening) 55%,transparent)}100%{box-shadow:0 0 0 16px transparent}}
+.plays{display:flex;gap:6px;align-items:center;font-size:14px;color:var(--ink-2)}
+.plays i{width:12px;height:12px;border-radius:50%;background:var(--listening)}
+.plays i.used{background:#C9CFDB}
+.part-title{font-family:var(--display);font-size:20px;font-weight:700;margin:0 0 8px}
+
+/* writing */
+.prompt{background:color-mix(in srgb,var(--writing) 7%,#fff);border:1.5px solid color-mix(in srgb,var(--writing) 30%,#fff);border-radius:var(--r-md);padding:18px 20px;white-space:pre-line}
+.prompt ul{margin:10px 0 0;padding-left:22px;white-space:normal}
+textarea.w{width:100%;min-height:260px;padding:16px;border:1.5px solid var(--line);border-radius:var(--r-md);font-size:18px;line-height:1.6;resize:vertical;background:#fff}
+textarea.w:focus{outline:none;border-color:var(--writing)}
+.wc{display:flex;justify-content:space-between;font-size:14.5px;color:var(--ink-2);margin-top:6px}
+.wc b.okc{color:var(--ok)}
+
+/* speaking */
+.frames{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.frame{aspect-ratio:4/3;border-radius:var(--r-md);display:grid;place-items:center;font-size:clamp(52px,10vw,86px);letter-spacing:6px;background:linear-gradient(160deg,#E8F6EC,#D7EEF7);border:6px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.frame:nth-child(2){background:linear-gradient(160deg,#FFF1E3,#F3E8FF)}
+.frame small{display:block;font-size:14px;letter-spacing:0;text-align:center;color:var(--ink-2);font-family:var(--display);font-weight:700}
+.rec{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:12px}
+.recdot{width:14px;height:14px;border-radius:50%;background:var(--danger);animation:beat 1s steps(2) infinite}
+.bigcount{font-family:var(--display);font-weight:800;font-size:30px;font-variant-numeric:tabular-nums}
+
+.foot{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:12px clamp(14px,3vw,28px) calc(12px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:15}
+.foot .muted{font-size:14.5px}
+
+/* capas */
+.overlay{position:fixed;inset:0;background:rgba(27,42,74,.82);display:grid;place-items:center;z-index:50;padding:20px}
+.overlay .card{max-width:480px;text-align:center}
+.overlay h2{font-size:30px;margin-bottom:8px}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 20px;border-radius:12px;z-index:60;font-size:15px;max-width:90vw}
+.err{background:#FDECEC;color:#8A1C12;border-radius:var(--r-sm);padding:10px 14px;font-size:15px}
+.spinner{width:40px;height:40px;border-radius:50%;border:4px solid var(--line);border-top-color:var(--ink);animation:spin 1s linear infinite;margin:40px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* resultados */
+.score{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center}
+.score .num{font-family:var(--display);font-size:86px;font-weight:800;line-height:.9}
+.scale{position:relative;height:40px;margin:26px 0 8px;display:flex;border-radius:10px;overflow:hidden}
+.scale div{display:grid;place-items:center;color:#fff;font-weight:700;font-size:13px}
+.marker{position:absolute;top:-14px;width:0;height:68px;border-left:3px solid var(--ink)}
+.marker::before{content:attr(data-v);position:absolute;top:-24px;left:-20px;width:40px;text-align:center;font-weight:800;font-size:15px}
+.skillrow{display:grid;grid-template-columns:140px 1fr 70px;gap:12px;align-items:center;margin:10px 0;font-size:15.5px}
+.track{height:14px;border-radius:9px;background:#EEF1F7;overflow:hidden}
+.track div{height:100%;border-radius:9px}
+.recbox{background:var(--ink);color:#fff;border-radius:var(--r-lg);padding:22px 24px}
+.recbox h3{font-size:30px;margin:4px 0}
+
+/* profesor */
+.invite{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center}
+.qr{background:#fff;padding:12px;border:1px solid var(--line);border-radius:var(--r-md)}
+.linkbox{font-family:ui-monospace,Menlo,monospace;font-size:14px;background:var(--paper);padding:10px 12px;border-radius:var(--r-sm);word-break:break-all}
+#printCard{display:none}
+
+@media (max-width:760px){
+  .hero,.score,.invite{grid-template-columns:1fr}
+  .opts,.pics{padding-left:0}
+  .brand .sep,.wordmark small{display:none}
+  .stamp{width:60px;height:60px;font-size:0}
+  .stamp i{font-size:22px;margin:0}
+  .skillrow{grid-template-columns:100px 1fr 56px}
+  .frames{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* prueba avanzada */
+.tag-adv{display:inline-block;font-family:var(--display);font-weight:800;letter-spacing:2px;font-size:13px;background:var(--ink);color:#fff;padding:4px 12px;border-radius:999px;margin:0 0 10px}
+.kwt1{margin-bottom:8px}
+.kwtkey{display:inline-block;font-family:var(--display);font-weight:800;letter-spacing:1.5px;border:2px solid var(--ink);border-radius:6px;padding:0 10px;margin-bottom:8px}
+.gapinput.wide{min-width:min(340px,70vw)}
+.context{font-style:italic;color:var(--ink-2);margin:0 0 10px}
+.testpick{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.testpick label{border:2px solid var(--line);border-radius:var(--r-md);padding:14px 16px;cursor:pointer;display:flex;gap:10px;align-items:flex-start;background:#fff}
+.testpick label:has(input:checked){border-color:var(--uoe);background:color-mix(in srgb,var(--uoe) 6%,#fff)}
+.testpick b{display:block;font-family:var(--display);font-size:19px}
+.ind{border-left:5px solid var(--writing);background:color-mix(in srgb,var(--writing) 5%,#fff);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:10px 14px}
+.ind p{margin:4px 0 0;font-size:15px}
+.indtop{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.pct{font-weight:800;font-size:14px;padding:2px 10px;border-radius:999px;background:hsl(calc(var(--p)*1.3),65%,88%)}
+.guide{border:1px solid var(--line);border-radius:var(--r-md);padding:12px 16px}
+.guide h4{margin:0 0 6px;font-family:var(--display);font-size:18px;color:var(--uoe)}
+.guide ul,.guide ol{margin:6px 0;padding-left:22px;font-size:15px}
+.guide .ans{color:var(--ok);font-weight:700;margin-left:8px}
+.guide summary{cursor:pointer;font-weight:700;font-size:15px}
+/* dashboard docente */
+.dash{max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.dhead{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;background:var(--ink);color:#fff;border-radius:var(--r-lg);padding:22px 26px;background-image:linear-gradient(120deg,#1B2A4A 60%,#6C4CF1)}
+.dhead h1{font-size:clamp(26px,3.4vw,38px)}
+.dhead p{margin:6px 0 0;opacity:.85;font-size:15px}
+.eyebrow{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;opacity:.8}
+.dbtns{display:flex;gap:8px}
+.dbtns .btn.ghost{background:#fff}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.kpi{background:#fff;border-radius:var(--r-md);padding:14px 16px;border-top:5px solid var(--k);box-shadow:0 1px 0 var(--line)}
+.kpi span{font-size:22px}.kpi b{display:block;font-family:var(--display);font-size:34px;line-height:1.1}.kpi b.kx{font-size:20px;line-height:1.3}
+.kpi small{color:var(--ink-2);font-size:13px}
+.grid2{display:grid;grid-template-columns:1.25fr 1fr;gap:18px}
+.panel{background:#fff;border-radius:var(--r-lg);padding:18px 20px;box-shadow:0 1px 0 var(--line)}
+.panel h3{font-size:21px}.panel .sub{margin:2px 0 10px;color:var(--ink-2);font-size:13.5px}
+.cv{position:relative;height:300px}.cv.tall{height:340px}.cv.short{height:175px;margin-bottom:10px}
+.tablewrap{overflow-x:auto}
+.tests input{padding:10px 12px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:#fff}
+.sttable{width:100%;border-collapse:collapse;font-size:14px}
+.sttable th{background:var(--paper);text-align:left;padding:8px;font-size:12.5px;white-space:nowrap}
+.sttable td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+.sttable td.hc{text-align:center;font-variant-numeric:tabular-nums}
+.insights{margin:6px 0;padding-left:20px;font-size:15px}.insights li{margin:6px 0}
+.foot-note{font-size:12px;color:var(--ink-2);text-align:center}
+@media (max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}.grid2,.testpick{grid-template-columns:1fr}}
+@media print{
+  @page{size:A4 landscape;margin:10mm}
+  @page portrait{size:A4 portrait;margin:12mm}
+  body.print-report .report{page:portrait}
+  body.print-report .report .score .num{font-size:64px}
+  body{background:#fff}
+  body.print-report .bar,body.print-report .stamps,body.print-report .foot,body.print-report .noprint,body.print-report #printCard{display:none!important}
+  body.print-report .panel,body.print-report .kpi,body.print-report .card,body.print-report .guide{break-inside:avoid}
+  body.print-report .dhead,body.print-report .recbox,body.print-report .kpi,body.print-report .hc,body.print-report .scale div{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body.print-report main{padding:0}
+  body:not(.print-report)>*:not(#printCard){display:none!important}
+  body:not(.print-report) #printCard{display:block!important;text-align:center;font-family:var(--body);padding:30px}
+  #printCard img.logo{height:60px;margin:0 16px}
+  #printCard h1{font-size:36px;margin:24px 0 6px}
+}
+</style>
+</head>
+<body>
+<header class="bar" id="bar">
+  <div class="brand">
+    <div id="centerBrand"></div>
+    <div class="sep" id="brandSep" hidden></div>
+    <div class="school" id="schoolBrand"></div>
+  </div>
+  <div class="timer" id="timer" hidden aria-live="off">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>
+    <span id="clock">40:00</span>
+  </div>
+</header>
+<nav class="stamps" id="stamps" hidden aria-label="Progreso"></nav>
+<main id="app"><div class="spinner"></div></main>
+<div id="printCard"></div>
+
+<script>
+/* =====================================================================
+   UTILIDADES
+   ===================================================================== */
+const $ = s => document.querySelector(s);
+const esc = t => String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const params = new URLSearchParams(location.search);
+const S = { token:null, center:null, inv:null, data:null, answers:{}, deadline:0, timerId:null, busy:false };
+const SKILLS = [
+  {k:'uoe', name:'Use of English', icon:'🧩', color:'var(--uoe)'},
+  {k:'reading', name:'Reading', icon:'📖', color:'var(--reading)'},
+  {k:'listening', name:'Listening', icon:'🎧', color:'var(--listening)'},
+  {k:'writing', name:'Writing', icon:'✏️', color:'var(--writing)'},
+  {k:'speaking', name:'Speaking', icon:'🎤', color:'var(--speaking)'}
+];
+const STEP_SKILL = ['uoe','uoe','reading','listening','writing','speaking'];
+
+async function api(action, data = {}) {
+  if (!/^https:\/\/script\.google\.com\//.test(APP.API_URL)) throw new Error('La plataforma aún no está conectada: falta pegar API_URL en index.html (ver guía).');
+  let res;
+  try {
+    res = await fetch(APP.API_URL, { method:'POST', body: JSON.stringify({ action, ...data }) });
+  } catch (e) { throw new Error('Sin conexión. Revisa internet y vuelve a intentar.'); }
+  const j = await res.json();
+  if (!j.ok) throw new Error(j.error || 'Error del servidor');
+  if (typeof j.remaining === 'number') setDeadline(j.remaining);
+  return j;
+}
+function toast(msg, ms = 3200) {
+  const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t); setTimeout(() => t.remove(), ms);
+}
+function view(html) { $('#app').innerHTML = html; window.scrollTo(0, 0); }
+function errorView(msg) {
+  view(`<div class="card stack"><h2>No se pudo continuar</h2><p class="err">${esc(msg)}</p><button class="btn" onclick="location.reload()">Volver a intentar</button></div>`);
+}
+
+/* =====================================================================
+   MARCA (logo del centro + logo de la institución)
+   ===================================================================== */
+function renderBrand() {
+  const c = S.center || { name:'BBEC Exam Centre', subtitle:'Platinum Exam Centre' };
+  const logo = APP.CENTER_LOGO_URL || c.logo;
+  $('#centerBrand').innerHTML = logo
+    ? `<img src="${esc(logo)}" alt="${esc(c.name)}">`
+    : `<div class="wordmark"><svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#1B2A4A"/><path d="M11 12h10a5 5 0 0 1 0 10H11zM11 22h12a5 5 0 0 1 0 10H11z" fill="none" stroke="#fff" stroke-width="3"/><circle cx="31" cy="11" r="4" fill="#F5A524"/></svg><div><b>${esc(c.name)}</b><small>${esc(c.subtitle || '')}</small></div></div>`;
+  if (S.inv) {
+    $('#brandSep').hidden = false;
+    $('#schoolBrand').innerHTML = (S.inv.logo ? `<img src="${esc(S.inv.logo)}" alt="">` : '') + `<span>${esc(S.inv.school)}</span>`;
+  }
+}
+
+/* =====================================================================
+   RELOJ
+   ===================================================================== */
+function setDeadline(sec) { S.deadline = Date.now() + sec * 1000; }
+function startClock() {
+  $('#timer').hidden = false;
+  clearInterval(S.timerId);
+  S.timerId = setInterval(() => {
+    const left = Math.max(0, Math.round((S.deadline - Date.now()) / 1000));
+    $('#clock').textContent = String(Math.floor(left / 60)).padStart(2, '0') + ':' + String(left % 60).padStart(2, '0');
+    $('#timer').className = 'timer' + (left <= 120 ? ' danger' : left <= 300 ? ' warn' : '');
+    if (left === 300) toast(T('Quedan 5 minutos. / 5 minutes left.', '5 minutes left.'));
+    if (left === 0) { clearInterval(S.timerId); submitStep(true); }
+  }, 500);
+}
+
+/* =====================================================================
+   SEGURIDAD: pantalla completa, cambio de pestaña, copiar/pegar, atajos
+   ===================================================================== */
+const Guard = { on:false, lock:false, fs: !!(document.documentElement.requestFullscreen) };
+function guardOn() {
+  Guard.on = true; document.body.classList.add('locked');
+  if (Guard.fs && !document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+  history.pushState(null, '', location.href);
+}
+function guardOff() {
+  Guard.on = false; document.body.classList.remove('locked');
+  if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+}
+async function incident(type) {
+  if (!Guard.on || Guard.lock || !S.token) return;
+  Guard.lock = true; setTimeout(() => Guard.lock = false, 2000);
+  if (window.speechSynthesis) speechSynthesis.cancel();
+  try {
+    const r = await api('viol', { token:S.token, type });
+    if (r.forced || r.done) { guardOff(); return finishView(r.summary, 'security'); }
+    const w = r.max - 1;
+    showOverlay(isAdv()
+      ? `<h2>⚠️ Warning ${r.count} of ${w}</h2><p>You left the test (${esc(type)}). This has been recorded and reported to your teacher and the exam centre.</p>
+         <p><b>${r.count >= w ? 'This is your last warning: if you leave again, the test will close automatically.' : 'After ' + w + ' warnings, a third exit will close the test.'}</b></p>
+         <button class="btn big" onclick="backToTest()">Return to the test</button>`
+      : `<h2>⚠️ Advertencia ${r.count} de ${w}</h2><p>Saliste de la prueba (${esc(type)}). Esto quedó registrado y se informa a tu profesor.</p>
+         <p><b>${r.count >= w ? 'Es tu última advertencia: si vuelves a salir, la prueba se cerrará automáticamente.' : 'Después de ' + w + ' advertencias, a la tercera salida la prueba se cerrará.'}</b></p>
+         <p class="small muted">You left the test. This has been recorded.</p>
+         <button class="btn big" onclick="backToTest()">Volver a la prueba</button>`);
+  } catch (e) { toast(e.message); }
+}
+function showOverlay(html) { hideOverlay(); const o = document.createElement('div'); o.className = 'overlay'; o.id = 'ov'; o.innerHTML = `<div class="card stack">${html}</div>`; document.body.appendChild(o); }
+function askConfirm(html) {
+  return new Promise(res => {
+    const o = document.createElement('div'); o.className = 'overlay'; o.id = 'cf';
+    o.innerHTML = `<div class="card stack">${html}<div class="tests" style="justify-content:center"><button class="btn ghost" data-v="0">${T('Revisar', 'Review')}</button><button class="btn" data-v="1">${T('Sí, continuar', 'Yes, continue')}</button></div></div>`;
+    o.addEventListener('click', e => { const b = e.target.closest('button[data-v]'); if (!b) return; o.remove(); res(b.dataset.v === '1'); });
+    document.body.appendChild(o);
+  });
+}
+function hideOverlay() { const o = $('#ov'); if (o) o.remove(); }
+function backToTest() {
+  hideOverlay();
+  if (Guard.fs && !document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden) incident('cambió de pestaña o ventana'); });
+window.addEventListener('blur', () => { setTimeout(() => { if (!document.hasFocus() && !document.hidden) incident('abrió otra aplicación'); }, 1200); });
+document.addEventListener('fullscreenchange', () => { if (Guard.on && !document.fullscreenElement) incident('salió de pantalla completa'); });
+['copy','cut','paste','contextmenu','dragstart','drop'].forEach(ev => document.addEventListener(ev, e => { if (Guard.on) e.preventDefault(); }));
+document.addEventListener('keydown', e => {
+  if (!Guard.on) return;
+  const k = (e.key || '').toLowerCase(), mod = e.ctrlKey || e.metaKey;
+  if (k === 'f12' || k === 'f5' || k === 'printscreen' || (mod && 'cvxuspfr'.includes(k) && k.length === 1) || (mod && e.shiftKey && 'ijck'.includes(k)) || (e.altKey && k.startsWith('arrow'))) {
+    e.preventDefault(); e.stopPropagation();
+  }
+}, true);
+window.addEventListener('beforeunload', e => { if (Guard.on) { e.preventDefault(); e.returnValue = ''; } });
+window.addEventListener('popstate', () => { if (Guard.on) history.pushState(null, '', location.href); });
+
+/* =====================================================================
+   AUDIO: voces en inglés (síntesis del navegador) o MP3 si se configuró
+   ===================================================================== */
+let VOICES = [];
+function loadVoices() { VOICES = (speechSynthesis.getVoices() || []).filter(v => /^en[-_]/i.test(v.lang)); }
+if ('speechSynthesis' in window) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+const FEM = /female|samantha|karen|serena|moira|tessa|libby|sonia|hazel|susan|zira|aria|jenny|emma|amy|kate|fiona|victoria|allison|ava|natasha|clara|maisie/i;
+const MAS = /\bmale|daniel|alex|fred|george|ryan|guy|david|mark|arthur|oliver|thomas|james|rishi|william|brian|eric|liam/i;
+function voiceFor(role) {
+  const pref = VOICES.filter(v => /en[-_]GB/i.test(v.lang)).concat(VOICES.filter(v => !/en[-_]GB/i.test(v.lang)));
+  const fem = pref.filter(v => FEM.test(v.name) && !/\bmale/i.test(v.name.replace(/female/i,''))), mas = pref.filter(v => MAS.test(v.name) && !FEM.test(v.name));
+  if (role === 'W' || role === 'G') return fem[0] || pref[0] || null;
+  if (role === 'M' || role === 'B') return mas[0] || pref[1] || pref[0] || null;
+  return pref[0] || null;
+}
+const PITCH = { W:1.05, M:0.92, G:1.3, B:1.18, N:1 };
+function sayOne(text, role, rate) {
+  return new Promise(res => {
+    const u = new SpeechSynthesisUtterance(text);
+    const v = voiceFor(role); if (v) u.voice = v; u.lang = v ? v.lang : 'en-GB';
+    u.rate = rate; u.pitch = PITCH[role] || 1; u.onend = res; u.onerror = res;
+    speechSynthesis.speak(u);
+  });
+}
+const wait = ms => new Promise(r => setTimeout(r, ms));
+async function speakLines(lines, rate) {
+  speechSynthesis.cancel();
+  for (const [role, text] of lines) {
+    for (const sentence of (text.match(/[^.!?]+[.!?]*/g) || [text])) await sayOne(sentence.trim(), role, rate);
+    await wait(380);
+  }
+}
+
+/* =====================================================================
+   INICIO
+   ===================================================================== */
+async function boot() {
+  try {
+    if (params.has('report')) { S.center = (await api('config').catch(() => ({}))).center; renderBrand(); return reportView(); }
+    if (params.has('teacher')) { S.center = (await api('config').catch(() => ({}))).center; renderBrand(); return teacherView(); }
+    const code = (params.get('inv') || '').toUpperCase();
+    if (!code) { S.center = (await api('config').catch(() => ({}))).center; renderBrand(); return homeView(); }
+    const r = await api('invInfo', { inv: code });
+    S.center = r.center; S.inv = r.inv; renderBrand();
+    const saved = sessionStorage.getItem('bbec_' + code);
+    if (saved) { S.token = saved; return resumeView(); }
+    isAdv() ? welcomeViewAdv() : welcomeView();
+  } catch (e) { renderBrand(); if (!params.has('inv')) homeView(e.message); else errorView(e.message); }
+}
+
+function homeView(warning) {
+  view(`<div class="stack">
+    ${warning ? `<p class="err">${esc(warning)}</p>` : ''}
+    <div class="card stack">
+      <h1 style="font-size:clamp(34px,5vw,52px)">English Placement Tests</h1>
+      <p class="muted">A1–B2 (for Schools, 9–18 años) · Advanced B2–C2 (16+ años, adultos y docentes) — formato Cambridge English Qualifications</p>
+      <div class="row">
+        <div class="card"><h3>Soy estudiante</h3><p class="small muted">Escribe el código que te dio tu profesor.</p>
+          <label class="f">Código<input id="code" maxlength="8" autocapitalize="characters" placeholder="Ej: K7M2QXA"></label>
+          <button class="btn" onclick="location.search='?inv='+encodeURIComponent($('#code').value.trim())">Entrar</button></div>
+        <div class="card"><h3>Soy profesor/a</h3><p class="small muted">Crea el enlace y el código QR para tu curso.</p>
+          <button class="btn skill" style="--skill:var(--uoe)" onclick="location.search='?teacher=1'">Crear invitación</button>
+          <p class="small muted" style="margin-top:12px">¿Ya tienes resultados? Informe del curso B2–C2:</p>
+          <div class="tests"><input id="rcode" maxlength="8" placeholder="Código" style="max-width:140px"><button class="btn sm ghost" onclick="location.search='?report='+encodeURIComponent($('#rcode').value.trim())">Ver informe</button></div></div>
+      </div>
+    </div></div>`);
+}
+
+/* =====================================================================
+   PORTAL DEL PROFESOR
+   ===================================================================== */
+function teacherView() {
+  view(`<div class="stack">
+    <div class="card stack">
+      <h1 style="font-size:clamp(32px,5vw,46px)">Crear invitación</h1>
+      <p class="muted">Cada invitación genera un enlace y un QR para un curso. Los resultados llegan al instante a tu correo y al centro examinador.</p>
+      <div class="testpick">
+        <label><input type="radio" name="t_test" value="A1B2" checked onchange="formOptions()"><span><b>A1–B2 · for Schools</b><span class="small muted">4° básico a IV medio (9–18 años) · 40 min · 6 formas</span></span></label>
+        <label><input type="radio" name="t_test" value="B2C2" onchange="formOptions()"><span><b>Advanced B2–C2</b><span class="small muted">Desde 16 años, adultos y docentes · 60 min · 25 formas · instrucciones en inglés</span></span></label>
+      </div>
+      <div class="row">
+        <label class="f">Clave del centro<input id="t_access" type="password" autocomplete="off" placeholder="La entrega BBEC"></label>
+        <label class="f">Tu nombre<input id="t_name" placeholder="Ej: Paula Soto"></label>
+      </div>
+      <div class="row">
+        <label class="f">Tu correo (recibirás los resultados)<input id="t_email" type="email" placeholder="profesor@colegio.cl"></label>
+        <label class="f">Institución<input id="t_school" placeholder="Colegio San Andrés"></label>
+      </div>
+      <div class="row">
+        <label class="f">Curso o grupo<input id="t_group" placeholder="7° Básico A"></label>
+        <label class="f">Nivel (para comparar con cursos del mismo nivel)
+          <select id="t_level">${['4° Básico','5° Básico','6° Básico','7° Básico','8° Básico','I Medio','II Medio','III Medio','IV Medio','Educación superior','Adultos','Docentes'].map(l => `<option>${l}</option>`).join('')}</select></label>
+      </div>
+      <div class="row">
+        <label class="f">Forma de la prueba<select id="t_form"></select></label>
+        <span></span>
+      </div>
+      <div class="row">
+        <label class="f">Logo de la institución (PNG/JPG, opcional)<input id="t_logo" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"></label>
+        <label class="f">…o URL pública del logo<input id="t_logourl" placeholder="https://…"></label>
+      </div>
+      <label class="check"><input type="checkbox" id="t_show" checked> Mostrar el resultado al estudiante al terminar</label>
+      <div id="t_err"></div>
+      <div><button class="btn big" id="t_go" onclick="createInvite()">Crear enlace y QR</button></div>
+    </div>
+    <div id="t_out"></div>
+    <div class="card stack"><h2>Informe del curso (B2–C2)</h2><p class="muted small">Dashboard con gráficos por curso, estudiante y habilidad, comparación con cursos del mismo nivel y con las estadísticas Cambridge 2024. Se puede descargar en PDF.</p>
+      <div class="tests"><input id="t_rcode" maxlength="8" placeholder="Código de la invitación" style="max-width:220px"><button class="btn sm" onclick="sessionStorage.setItem('bbec_access',$('#t_access').value.trim());location.search='?report='+encodeURIComponent($('#t_rcode').value.trim())">Ver informe</button></div></div>
+  </div>`);
+  formOptions();
+}
+function formOptions() {
+  const adv = document.querySelector('input[name=t_test]:checked').value === 'B2C2';
+  $('#t_form').innerHTML = '<option value="random">Aleatoria para cada estudiante (recomendado)</option>' +
+    (adv ? Array.from({ length:25 }, (_, i) => { const f = 'A' + String(i + 1).padStart(2, '0'); return `<option value="${f}">Forma ${f}</option>`; }).join('')
+         : [1,2,3,4,5,6].map(i => `<option value="F${i}">Forma ${i}</option>`).join(''));
+  if (adv && /Básico/.test($('#t_level').value)) $('#t_level').value = 'III Medio';
+}
+
+async function createInvite() {
+  const b = $('#t_go'); b.disabled = true; $('#t_err').innerHTML = '';
+  try {
+    const access = $('#t_access').value.trim();
+    let logo = $('#t_logourl').value.trim();
+    const file = $('#t_logo').files[0];
+    if (file) {
+      if (file.size > 1500000) throw new Error('El logo supera 1,5 MB.');
+      const data = await fileToB64(file);
+      logo = (await api('uploadLogo', { access, name:file.name, mime:file.type, data })).url;
+    }
+    const r = await api('invite', { access, teacherName:$('#t_name').value, teacherEmail:$('#t_email').value, school:$('#t_school').value,
+      group:$('#t_group').value, form:$('#t_form').value, logo, showResult:$('#t_show').checked,
+      test:document.querySelector('input[name=t_test]:checked').value, level:$('#t_level').value });
+    const url = location.origin + location.pathname + '?inv=' + r.code;
+    S.inv = r.inv; renderBrand();
+    $('#t_out').innerHTML = `<div class="card stack">
+      <h2>Invitación lista · código ${esc(r.code)}</h2>
+      <div class="invite"><div class="qr" id="qr"></div>
+        <div class="stack"><div class="linkbox" id="lnk">${esc(url)}</div>
+        <div class="tests"><button class="btn sm" onclick="navigator.clipboard.writeText('${url}').then(()=>toast('Enlace copiado'))">Copiar enlace</button>
+        <button class="btn sm ghost" onclick="downloadQR('${r.code}')">Descargar QR</button>
+        <button class="btn sm ghost" onclick="window.print()">Imprimir invitación</button>
+        ${r.inv.test === 'B2C2' ? `<a class="btn sm ghost" href="?report=${r.code}" target="_blank">Informe del curso</a>` : ''}</div>
+        <p class="small muted">Comparte el enlace por correo, WhatsApp o Classroom, o proyecta el QR en la sala. Cada estudiante puede rendir una sola vez con esta invitación.</p></div></div></div>`;
+    new QRCode($('#qr'), { text:url, width:210, height:210, colorDark:'#1B2A4A', correctLevel:QRCode.CorrectLevel.M });
+    setTimeout(() => {
+      const img = $('#qr canvas') ? $('#qr canvas').toDataURL() : '';
+      const c = S.center || {};
+      $('#printCard').innerHTML = `<div>${(APP.CENTER_LOGO_URL||c.logo)?`<img class="logo" src="${esc(APP.CENTER_LOGO_URL||c.logo)}">`:`<b style="font-size:26px">${esc(c.name||'BBEC Exam Centre')}</b>`}${logo?`<img class="logo" src="${esc(logo)}">`:''}</div>
+        <h1>${r.inv.test === 'B2C2' ? 'Advanced English Placement Test B2–C2' : 'English Placement Test'}</h1><p style="font-size:20px">${esc(r.inv.school)} · ${esc(r.inv.group||'')}</p>
+        <img src="${img}" width="300"><p style="font-size:22px">Código: <b>${esc(r.code)}</b></p><p>${esc(url)}</p>
+        <p style="font-size:15px">${r.inv.test === 'B2C2' ? 'Duration: 60 minutes · Use headphones · Computer with microphone' : 'Duración: 40 minutos · Usa audífonos · Computador o tablet con micrófono'}</p>`;
+    }, 200);
+  } catch (e) { $('#t_err').innerHTML = `<p class="err">${esc(e.message)}</p>`; }
+  b.disabled = false;
+}
+function downloadQR(code) {
+  const c = $('#qr canvas'); if (!c) return;
+  const a = document.createElement('a'); a.href = c.toDataURL('image/png'); a.download = 'QR_placement_' + code + '.png'; a.click();
+}
+function fileToB64(f) { return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(f); }); }
+
+/* =====================================================================
+   BIENVENIDA DEL ESTUDIANTE
+   ===================================================================== */
+let MIC_OK = false;
+function welcomeView() {
+  const m = (S.center && S.center.minutes) || 40;
+  view(`<div class="hero">
+    <div>
+      <h1>English Placement Test</h1>
+      <p class="lead">Find out which Cambridge English exam is right for you.</p>
+      <ul class="facts">
+        <li><b>${m} min</b>como máximo</li>
+        <li><b>5 partes</b>que se adaptan a tu nivel</li>
+        <li><b>2 veces</b>puedes escuchar cada audio</li>
+        <li><b>1 intento</b>por estudiante</li>
+      </ul>
+      <div class="skillsline">${SKILLS.map(s => `<span class="chip" style="background:${s.color}">${s.icon} ${s.name}</span>`).join('')}</div>
+      <p class="small muted" style="margin-top:18px">${esc(S.inv.school)}${S.inv.group ? ' · ' + esc(S.inv.group) : ''}${S.inv.teacherName ? ' · Prof. ' + esc(S.inv.teacherName) : ''}</p>
+    </div>
+    <div class="card">
+      <label class="f">Nombre y apellido<input id="s_name" autocomplete="name"></label>
+      <div class="row"><label class="f">RUT o N° de lista<input id="s_id"></label><label class="f">Edad<input id="s_age" type="number" min="8" max="20" inputmode="numeric"></label></div>
+      <label class="f">Curso<input id="s_grade" placeholder="Ej: 7° Básico"></label>
+      <p class="small" style="margin:14px 0 4px"><b>Antes de empezar, prueba tus audífonos y micrófono:</b></p>
+      <div class="tests"><button class="btn sm ghost" onclick="testAudio()">🔊 Probar audio</button><button class="btn sm ghost" onclick="testMic()">🎤 Probar micrófono</button></div>
+      <div class="meter" id="micm" hidden><div></div></div>
+      <p class="small muted" id="micmsg"></p>
+      <label class="check"><input type="checkbox" id="s_rules"> <span>Entiendo que la prueba se hace en pantalla completa, que no puedo salir de ella, cambiar de pestaña ni copiar o pegar, y que cada salida queda registrada.</span></label>
+      <div id="s_err"></div>
+      <button class="btn big" style="width:100%;margin-top:8px" onclick="startTest()">Comenzar la prueba</button>
+    </div></div>`);
+}
+async function testAudio() {
+  if (!('speechSynthesis' in window)) return toast('Este navegador no reproduce audio de voz. Usa Chrome o Edge.');
+  await speakLines([['W', 'Hello! Can you hear me clearly? Good luck with your test.']], 0.95);
+}
+async function testMic() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio:true });
+    MIC_OK = true; $('#micm').hidden = false; $('#micmsg').textContent = 'Di algo en inglés: la barra verde debe moverse.';
+    const ctx = new (window.AudioContext || window.webkitAudioContext)(), an = ctx.createAnalyser(), src = ctx.createMediaStreamSource(stream);
+    src.connect(an); const buf = new Uint8Array(an.fftSize); const end = Date.now() + 6000;
+    (function loop() { an.getByteTimeDomainData(buf); let p = 0; for (const v of buf) p = Math.max(p, Math.abs(v - 128));
+      $('#micm div').style.width = Math.min(100, p * 1.6) + '%';
+      if (Date.now() < end) requestAnimationFrame(loop); else { stream.getTracks().forEach(t => t.stop()); ctx.close(); $('#micmsg').textContent = '✔ Micrófono listo.'; } })();
+  } catch (e) { MIC_OK = false; $('#micmsg').textContent = 'No se pudo usar el micrófono. Revisa los permisos del navegador. (Podrás rendir igual; Speaking quedará para revisión.)'; }
+}
+async function startTest() {
+  $('#s_err').innerHTML = '';
+  if (!$('#s_rules').checked) return $('#s_err').innerHTML = `<p class="err">${T('Marca la casilla de reglas para continuar.', 'Please tick the box to accept the rules.')}</p>`;
+  try {
+    const r = await api('start', { inv:S.inv.code, student:{ name:$('#s_name').value, id:$('#s_id').value, age:$('#s_age').value, grade:$('#s_grade').value, email:$('#s_email') ? $('#s_email').value : '' } });
+    S.token = r.token; sessionStorage.setItem('bbec_' + S.inv.code, r.token);
+    guardOn(); startClock(); loadStep();
+  } catch (e) { $('#s_err').innerHTML = `<p class="err">${esc(e.message)}</p>`; }
+}
+function resumeView() {
+  view(`<div class="card stack" style="text-align:center"><h2>${T('Tu prueba sigue en curso', 'Your test is still in progress')}</h2>
+    <p>${T('El reloj no se detuvo. Presiona para volver a pantalla completa y continuar.', 'The clock has not stopped. Press the button to return to full screen and continue.')}</p>
+    <div><button class="btn big" onclick="guardOn();startClock();loadStep()">${T('Continuar la prueba', 'Continue the test')}</button></div></div>`);
+}
+
+/* =====================================================================
+   SECCIONES
+   ===================================================================== */
+const INSTR = {
+  'uoe-core': ['Part 1 · Use of English', 'For each question, choose the correct answer.', 'Elige la respuesta correcta para cada pregunta.'],
+  'uoe-2':    ['Part 2 · Use of English', 'Choose the correct answer or write ONE word in each gap. If there is a word in a box, use it to form a word that fits the gap.', 'Elige o escribe UNA palabra. Si hay una palabra en un recuadro, transfórmala para completar la oración.'],
+  'reading':  ['Part 3 · Reading', 'Read the notices and the text. For each question, choose the correct answer.', 'Lee los avisos y el texto. Elige la respuesta correcta.'],
+  'listening':['Part 4 · Listening', 'Press play to listen. You can listen to each recording TWO times. For each question, choose the correct answer.', 'Presiona ▶ para escuchar. Cada audio se puede escuchar DOS veces. Lee las preguntas antes de escuchar.'],
+  'writing':  ['Part 5 · Writing', 'Read the task and write your answer in English.', 'Lee la tarea y escribe tu respuesta en inglés. Copiar y pegar está desactivado.'],
+  'speaking': ['Part 6 · Speaking', 'Read the question. You have 15 seconds to prepare, then speak in English until the time finishes. You can record each answer only once.', 'Tienes 15 segundos para prepararte y luego hablas en inglés. Cada respuesta se graba una sola vez.']
+};
+
+function renderStamps(stepIdx) {
+  const cur = STEP_SKILL[stepIdx];
+  const doneUntil = SKILLS.findIndex(s => s.k === cur);
+  $('#stamps').hidden = false;
+  $('#stamps').innerHTML = SKILLS.map((s, i) => `<div class="stamp ${i < doneUntil ? 'done' : i === doneUntil ? 'now' : ''}" style="--c:${s.color};--rot:${[-6,4,-3,5,-4][i]}deg" title="${s.name}"><i>${s.icon}</i>${s.name}</div>`).join('');
+}
+
+async function loadStep() {
+  hideOverlay(); view('<div class="spinner"></div>');
+  try {
+    const d = await api('step', { token:S.token });
+    if (d.done) return finishView(d.summary);
+    S.data = d; S.answers = JSON.parse(sessionStorage.getItem('bbec_ans_' + S.token + '_' + d.step) || '{}');
+    const skill = STEP_SKILL[d.step];
+    document.documentElement.style.setProperty('--skill', `var(--${skill})`);
+    renderStamps(d.step);
+    const [part, en, es] = isAdv() ? INSTR_ADV[d.name] : INSTR[d.name];
+    let html = `<div class="stack"><div class="card intro"><div class="part">${part}</div><h2>${SKILLS.find(s=>s.k===skill).name}</h2><p style="margin:8px 0 0">${en}</p>${es ? `<p class="es">${es}</p>` : ''}</div>`;
+    let n = 0;
+    if (d.items) html += d.items.map(it => itemHTML(it, ++n)).join('');
+    if (d.blocks) html += d.blocks.map(b => `<div>${b.type === 'notice'
+        ? `<div class="notice"><span class="emo">${b.img}</span><p>${esc(b.body)}</p></div>`
+        : `<div class="article"><div class="top"><span>${b.img}</span><h3>${esc(b.title)}</h3></div>${b.body.split(/\n\n/).map(p => `<p>${esc(p)}</p>`).join('')}</div>`}
+        ${b.items.map(it => itemHTML(it, ++n)).join('')}</div>`).join('');
+    if (d.parts) html += d.parts.map((p, i) => `<div class="card stack" style="padding:18px">
+        ${p.title ? `<p class="part-title">${esc(p.title)}</p>` : ''}${p.context ? `<p class="context">${esc(p.context)}</p>` : ''}
+        <div class="player" id="pl_${i}"><button class="playbtn" aria-label="Play" onclick="playClip('${p.clip}',${i})" ${p.playsLeft <= 0 ? 'disabled' : ''}>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+          <div><b>Recording ${i + 1}</b><div class="plays" id="pd_${i}">${dots(p.playsLeft)}</div></div></div>
+        ${p.items.map(it => itemHTML(it, ++n)).join('')}</div>`).join('');
+    if (d.task) html += writingHTML(d.task);
+    if (d.tasks) html += d.tasks.map((t, i) => speakingHTML(t, i)).join('');
+    html += `</div>`;
+    view(html);
+    bindItems();
+    if (d.task) bindWriting(d.task);
+    const last = d.step === d.total - 1;
+    const foot = document.createElement('div'); foot.className = 'foot'; foot.id = 'foot';
+    foot.innerHTML = `<span class="muted">${T('Parte', 'Part')} ${d.step + 1} ${T('de', 'of')} ${d.total}</span><button class="btn skill big" id="nextBtn" onclick="submitStep()">${last ? T('Terminar la prueba', 'Finish the test') : T('Continuar', 'Continue')}</button>`;
+    document.querySelectorAll('#foot').forEach(f => f.remove()); document.body.appendChild(foot);
+    if (d.tasks) updateSpeakBtn();
+  } catch (e) { errorView(e.message); }
+}
+const dots = left => `${[0,1].map(i => `<i class="${i < 2 - left ? 'used' : ''}"></i>`).join('')}<span>${left > 0 ? T(`Te quedan ${left}`, `${left} play${left > 1 ? 's' : ''} left`) : T('Sin reproducciones', 'No plays left')}</span>`;
+
+function itemHTML(it, n) {
+  if (it.t === 'kwt') return kwtHTML(it, n);
+  let body;
+  if (it.t === 'gap') {
+    const parts = esc(it.q).split('___');
+    body = `<div class="qhead"><span class="qn">${n}</span><div class="qtext">${parts[0]}<input class="gapinput" data-k="${it.k}" autocomplete="off" autocapitalize="off" spellcheck="false" value="${esc(S.answers[it.k] || '')}" aria-label="Respuesta ${n}">${parts.slice(1).join('___')}</div>${it.hint ? `<span class="hint">${esc(it.hint)}</span>` : ''}</div>`;
+  } else if (it.t === 'pic') {
+    body = `<div class="qhead"><span class="qn">${n}</span><div class="qtext">${esc(it.q)}</div></div>
+      <div class="pics" role="radiogroup">${it.o.map(o => { const [e, l] = o.split('|'); return `<button type="button" class="pic ${S.answers[it.k] === o ? 'on' : ''}" data-k="${it.k}" data-v="${esc(o)}" role="radio"><span>${e}</span><span>${esc(l || '')}</span></button>`; }).join('')}</div>`;
+  } else {
+    body = `<div class="qhead"><span class="qn">${n}</span><div class="qtext">${esc(it.q)}</div></div>
+      <div class="opts" role="radiogroup">${it.o.map(o => `<button type="button" class="opt ${S.answers[it.k] === o ? 'on' : ''}" data-k="${it.k}" data-v="${esc(o)}" role="radio"><span class="dot"></span><span>${esc(o)}</span></button>`).join('')}</div>`;
+  }
+  return `<div class="q">${body}</div>`;
+}
+function persist() { sessionStorage.setItem('bbec_ans_' + S.token + '_' + S.data.step, JSON.stringify(S.answers)); }
+function bindItems() {
+  document.querySelectorAll('.opt,.pic').forEach(b => b.addEventListener('click', () => {
+    const k = b.dataset.k; S.answers[k] = b.dataset.v; persist();
+    document.querySelectorAll(`[data-k="${k}"]`).forEach(x => x.classList.toggle('on', x === b));
+  }));
+  document.querySelectorAll('.gapinput').forEach(i => i.addEventListener('input', () => { S.answers[i.dataset.k] = i.value; persist(); }));
+}
+
+/* ---- Listening ---- */
+let PLAYING = false;
+async function playClip(clip, i) {
+  if (PLAYING) return;
+  const box = $('#pl_' + i), btn = box.querySelector('.playbtn');
+  PLAYING = true; document.querySelectorAll('.playbtn').forEach(b => b.disabled = true); box.classList.add('playing');
+  try {
+    const r = await api('play', { token:S.token, clip });
+    $('#pd_' + i).innerHTML = dots(r.playsLeft);
+    if (r.url) { const a = new Audio(r.url); await new Promise(res => { a.onended = res; a.onerror = res; a.play().catch(res); }); }
+    else await speakLines(r.lines, r.rate);
+    btn.dataset.left = r.playsLeft;
+  } catch (e) { toast(e.message); btn.dataset.left = 0; }
+  box.classList.remove('playing'); PLAYING = false;
+  document.querySelectorAll('.player').forEach(p => { const b = p.querySelector('.playbtn'); const left = b.dataset.left; b.disabled = left !== undefined && +left <= 0 || /Sin reproducciones|No plays left/.test(p.textContent); });
+}
+
+/* ---- Writing ---- */
+function writingHTML(t) {
+  if (t.adv) return `<div class="prompt">${esc(t.prompt)}</div>
+    <textarea class="w" id="wtext" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="sentences" placeholder="Write your essay here…">${esc(S.answers.text || '')}</textarea>
+    <div class="wc"><span>Write <b>${t.min}–${t.max}</b> words.</span><span id="wcount">0 words</span></div>`;
+  return `<div class="prompt"><b>${esc(t.prompt)}</b><ul>${t.bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul></div>
+    <textarea class="w" id="wtext" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="sentences" placeholder="Write here in English…">${esc(S.answers.text || '')}</textarea>
+    <div class="wc"><span>Escribe al menos <b>${t.min}</b> palabras.</span><span id="wcount">0 palabras</span></div>`;
+}
+function bindWriting(t) {
+  const ta = $('#wtext'), upd = () => { const n = (ta.value.match(/[A-Za-zÀ-ÿ']+/g) || []).length;
+    $('#wcount').innerHTML = `<b class="${n >= t.min ? 'okc' : ''}" style="${t.max && n > t.max ? 'color:var(--danger)' : ''}">${n}</b> ${T('palabras', 'words')}${t.max && n > t.max ? T(' (supera el máximo)', ' (over the limit)') : ''}`; S.answers.text = ta.value; persist(); };
+  ta.addEventListener('input', upd); upd();
+}
+
+/* ---- Speaking ---- */
+function speakingHTML(t, i) {
+  const imgs = t.img ? `<div class="frames">${t.img.split('|').map((e, j) => `<div class="frame"><div>${e}<small>Picture ${'AB'[j]}</small></div></div>`).join('')}</div>` : '';
+  return `<div class="card" id="sp_${i}"><div class="qhead"><span class="qn">${i + 1}</span><div class="qtext">${esc(t.prompt)}</div></div>${imgs}
+    <div class="rec" id="rc_${i}">${t.done ? '<b style="color:var(--ok)">✔ ' + T('Respuesta guardada', 'Answer saved') + '</b>' :
+    `<button class="btn skill" onclick="speakTask(${i})">🎤 ${T('Empezar (15 s para prepararte)', 'Start (15 s to prepare)')}</button><span class="muted small">${T(`Hablarás hasta ${t.secs} segundos.`, `You will speak for up to ${t.secs} seconds.`)}</span>`}</div></div>`;
+}
+function updateSpeakBtn() { const all = S.data.tasks.every(t => t.done); $('#nextBtn').disabled = !all; }
+async function speakTask(i) {
+  const t = S.data.tasks[i], rc = $('#rc_' + i);
+  document.querySelectorAll('.rec .btn').forEach(b => b.disabled = true);
+  let stream = null;
+  try { stream = await navigator.mediaDevices.getUserMedia({ audio:true }); } catch (e) { stream = null; }
+  if (!stream) {
+    rc.innerHTML = '<span class="err">Micrófono no disponible. Tu profesor evaluará Speaking en forma presencial.</span>';
+    await api('speak', { token:S.token, task:t.key, audio:'', transcript:'', secs:0 }).catch(() => {});
+    t.done = true; updateSpeakBtn(); document.querySelectorAll('.rec .btn').forEach(b => b.disabled = false); return;
+  }
+  for (let s = 15; s > 0; s--) { rc.innerHTML = `<span class="bigcount">${s}</span><span class="muted">${T('Prepárate… / Get ready…', 'Get ready…')}</span>`; await wait(1000); }
+  const mime = ['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/ogg'].find(m => window.MediaRecorder && MediaRecorder.isTypeSupported(m)) || '';
+  const rec = new MediaRecorder(stream, mime ? { mimeType:mime, audioBitsPerSecond:32000 } : undefined);
+  const chunks = []; rec.ondataavailable = e => e.data.size && chunks.push(e.data);
+  let transcript = '', active = true, sr = null;
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SR) { try { sr = new SR(); sr.lang = 'en-GB'; sr.continuous = true; sr.interimResults = false;
+    sr.onresult = e => { for (let k = e.resultIndex; k < e.results.length; k++) if (e.results[k].isFinal) transcript += ' ' + e.results[k][0].transcript; };
+    sr.onend = () => { if (active) try { sr.start(); } catch (_) {} }; sr.start(); } catch (_) { sr = null; } }
+  rec.start(250);
+  const t0 = Date.now(); let stopEarly = false;
+  await new Promise(res => {
+    const tick = () => { const left = t.secs - Math.floor((Date.now() - t0) / 1000);
+      if (left <= 0 || stopEarly) return res();
+      rc.innerHTML = `<span class="recdot"></span><span class="bigcount">${left}</span><span class="muted">${T('Grabando… habla en inglés', 'Recording… speak now')}</span>${Date.now() - t0 > 12000 ? `<button class="btn sm ghost" id="stopb">${T('Terminé', "I've finished")}</button>` : ''}`;
+      const sb = $('#stopb'); if (sb) sb.onclick = () => { stopEarly = true; };
+      setTimeout(tick, 300); };
+    tick();
+  });
+  active = false; if (sr) try { sr.stop(); } catch (_) {}
+  await new Promise(res => { rec.onstop = res; rec.stop(); });
+  stream.getTracks().forEach(x => x.stop());
+  await wait(600);
+  rc.innerHTML = `<span class="muted">${T('Guardando tu respuesta…', 'Saving your answer…')}</span>`;
+  const blob = new Blob(chunks, { type: rec.mimeType || 'audio/webm' });
+  try {
+    await api('speak', { token:S.token, task:t.key, audio: await fileToB64(blob), mime: blob.type, transcript: transcript.trim(), secs: Math.round((Date.now() - t0) / 1000) });
+    rc.innerHTML = `<b style="color:var(--ok)">✔ ${T('Respuesta guardada', 'Answer saved')}</b>`; t.done = true;
+  } catch (e) { rc.innerHTML = `<span class="err">${esc(e.message)}</span>`; t.done = true; }
+  document.querySelectorAll('.rec .btn').forEach(b => b.disabled = false);
+  updateSpeakBtn();
+}
+
+/* ---- Enviar sección ---- */
+async function submitStep(timeUp = false) {
+  if (S.busy) return;
+  const d = S.data; if (!d) return;
+  if (!timeUp) {
+    const keys = [...(d.items || []), ...(d.blocks || []).flatMap(b => b.items), ...(d.parts || []).flatMap(p => p.items)].map(i => i.k);
+    const missing = keys.filter(k => !S.answers[k] || !String(S.answers[k]).trim()).length;
+    const ok = await askConfirm(missing
+      ? T(`<h2>Tienes ${missing} pregunta(s) sin responder</h2><p>¿Continuar de todas formas? No podrás volver a esta parte.</p>`, `<h2>You have ${missing} unanswered question(s)</h2><p>Continue anyway? You will not be able to return to this part.</p>`)
+      : T(`<h2>¿Continuar?</h2><p>No podrás volver a esta parte de la prueba.</p>`, `<h2>Continue?</h2><p>You will not be able to return to this part of the test.</p>`));
+    if (!ok) return;
+  }
+  S.busy = true; if (window.speechSynthesis) speechSynthesis.cancel();
+  const btn = $('#nextBtn'); if (btn) btn.disabled = true;
+  try {
+    const r = await api('submit', { token:S.token, step:d.step, answers:S.answers });
+    if (r.done) { S.busy = false; return finishView(r.summary, timeUp ? 'time' : 'student'); }
+    S.busy = false; loadStep();
+  } catch (e) { S.busy = false; if (btn) btn.disabled = false; toast(e.message); }
+}
+
+/* =====================================================================
+   RESULTADOS
+   ===================================================================== */
+function finishView(sum, reason) {
+  guardOff(); clearInterval(S.timerId); $('#timer').hidden = true; $('#stamps').hidden = true;
+  document.querySelectorAll('#foot').forEach(f => f.remove()); hideOverlay();
+  if (S.inv) sessionStorage.removeItem('bbec_' + S.inv.code);
+  const head = (reason || (sum && sum.reason)) === 'security' ? '<p class="err">La prueba se cerró por salir de la pantalla demasiadas veces.</p>'
+    : (reason || (sum && sum.reason)) === 'time' ? '<p class="muted">Se acabó el tiempo. Tus respuestas fueron enviadas.</p>' : '';
+  if (!sum || sum.hidden) return view(`<div class="card stack" style="text-align:center">${head}<h1>Well done, ${esc(sum ? sum.student : '')}!</h1><p>${T('Tus resultados fueron enviados a tu profesor y al centro examinador.', 'Your results have been sent to your email, your teacher and the exam centre.')}</p><p class="muted">${T('Ya puedes cerrar esta ventana.', 'You can now close this window.')}</p></div>`);
+  if (sum.test === 'B2C2') return finishViewAdv(sum, head.replace('La prueba se cerró por salir de la pantalla demasiadas veces.', 'The test was closed because you left the screen too many times.').replace('Se acabó el tiempo. Tus respuestas fueron enviadas.', 'Time is up. Your answers have been submitted.'));
+  const bands = [['Pre-A1',80,100,'#9AA5B8'],['A1',100,120,'#6C4CF1'],['A2',120,140,'#0E9C9C'],['B1',140,160,'#F26B1D'],['B2',160,180,'#D6336C'],['C1',180,200,'#239B45']];
+  const pos = v => (Math.min(Math.max(v, 80), 200) - 80) / 120 * 100;
+  view(`<div class="stack">${head}
+    <div class="card"><div class="score"><div><div class="num">${sum.overall}</div><div class="muted small">Cambridge English Scale</div></div>
+      <div><h1 style="font-size:clamp(28px,4vw,40px)">Well done, ${esc(sum.student)}!</h1><p class="muted" style="margin:6px 0 0">Tu nivel estimado es <b>${sum.cefr}</b> del Marco Común Europeo.</p></div></div>
+      <div class="scale">${bands.map(b => `<div style="flex:1;background:${b[3]}">${b[0]}</div>`).join('')}<span class="marker" style="left:${pos(sum.overall)}%" data-v="${sum.overall}"></span></div>
+      <div class="small muted" style="display:flex;justify-content:space-between"><span>80</span><span>100</span><span>120</span><span>140</span><span>160</span><span>180</span><span>200</span></div></div>
+    <div class="recbox"><div class="small" style="opacity:.8">Examen recomendado</div><h3>${esc(sum.rec.exam)}</h3><div>${esc(sum.rec.grade)}</div>${sum.rec.note ? `<p class="small" style="opacity:.85;margin-bottom:0">${esc(sum.rec.note)}</p>` : ''}</div>
+    <div class="card">${SKILLS.map(s => { const v = sum.scores[s.k];
+      return `<div class="skillrow"><span>${s.icon} ${s.name}</span><div class="track"><div style="width:${v == null ? 0 : pos(v)}%;background:${s.color}"></div></div><b>${v == null ? '—' : v}</b></div>`; }).join('')}
+      ${sum.speakingPending ? '<p class="small muted">Speaking queda pendiente de revisión por tu profesor.</p>' : ''}</div>
+    <p class="small muted" style="text-align:center">Resultados enviados a tu profesor y al centro examinador. Ya puedes cerrar esta ventana.</p></div>`);
+}
+
+/* =====================================================================
+   PRUEBA AVANZADA B2–C2 · interfaz (instrucciones en inglés)
+   ===================================================================== */
+const isAdv = () => !!(S.inv && S.inv.test === 'B2C2');
+const T = (es, en) => isAdv() ? en : es;
+const INSTR_ADV = {
+  'uoe-core': ['Part 1 · Use of English', 'For questions 1–10, read the sentences and choose the answer (A, B, C or D) which best fits each gap.'],
+  'uoe-2':    ['Part 2 · Use of English', 'Choose the correct answer, or write ONE word in each gap. Where a word is given in CAPITALS, use it to form a word that fits the gap. For key word transformations, complete the second sentence so that it has a similar meaning to the first, using the word given (do not change it).'],
+  'reading':  ['Part 3 · Reading', 'Read the text. For each question, choose the answer (A, B, C or D) which you think fits best according to the text.'],
+  'listening':['Part 4 · Listening', 'You will hear some extracts and a longer conversation. You can listen to each recording TWICE. Read the questions before you listen, then choose the best answer.'],
+  'writing':  ['Part 5 · Writing', 'Read the task carefully and write your answer in the space provided. Copy and paste are disabled. Keep an eye on the word counter.'],
+  'speaking': ['Part 6 · Speaking', 'Read each task. You have 15 seconds to prepare. Then speak until the time runs out. Each answer can be recorded only once.']
+};
+const ADV_BANDS = [['A2',120,140,'#9AA5B8'],['B1',140,160,'#F26B1D'],['B2',160,180,'#D6336C'],['C1',180,200,'#6C4CF1'],['C2',200,230,'#239B45']];
+const advPos = v => (Math.min(Math.max(v, 120), 230) - 120) / 110 * 100;
+const advCefr = x => x < 140 ? 'A2' : x < 160 ? 'B1' : x < 180 ? 'B2' : x < 200 ? 'C1' : 'C2';
+
+function welcomeViewAdv() {
+  const m = S.inv.minutes || 60;
+  view(`<div class="hero">
+    <div>
+      <p class="tag-adv">ADVANCED · B2 · C1 · C2</p>
+      <h1>Advanced English Placement Test</h1>
+      <p class="lead">Find out which Cambridge English Qualification is right for you: B2 First, C1 Advanced or C2 Proficiency.</p>
+      <ul class="facts">
+        <li><b>${m} min</b>maximum</li>
+        <li><b>6 parts</b>that adapt to your level</li>
+        <li><b>2 plays</b>for each recording</li>
+        <li><b>1 attempt</b>per candidate</li>
+      </ul>
+      <div class="skillsline">${SKILLS.map(s => `<span class="chip" style="background:${s.color}">${s.icon} ${s.name}</span>`).join('')}</div>
+      <p class="small muted" style="margin-top:18px">${esc(S.inv.school)}${S.inv.group ? ' · ' + esc(S.inv.group) : ''}${S.inv.teacherName ? ' · ' + esc(S.inv.teacherName) : ''}</p>
+    </div>
+    <div class="card">
+      <label class="f">Full name<input id="s_name" autocomplete="name"></label>
+      <div class="row"><label class="f">ID number (RUT)<input id="s_id"></label><label class="f">Age<input id="s_age" type="number" min="14" max="99" inputmode="numeric"></label></div>
+      <label class="f">Email (your report will be sent here)<input id="s_email" type="email" autocomplete="email" placeholder="name@email.com"></label>
+      <label class="f">Class / group (optional)<input id="s_grade" placeholder="e.g. 4° Medio A, Teachers 2026"></label>
+      <p class="small" style="margin:14px 0 4px"><b>Before you start, test your headphones and microphone:</b></p>
+      <div class="tests"><button class="btn sm ghost" onclick="testAudio()">🔊 Test audio</button><button class="btn sm ghost" onclick="testMic()">🎤 Test microphone</button></div>
+      <div class="meter" id="micm" hidden><div></div></div>
+      <p class="small muted" id="micmsg"></p>
+      <label class="check"><input type="checkbox" id="s_rules"> <span>I understand that the test runs in full screen, that I must not leave it, switch tabs or copy and paste, and that every exit is recorded. After two warnings, a third exit will close the test.</span></label>
+      <div id="s_err"></div>
+      <button class="btn big" style="width:100%;margin-top:8px" onclick="startTest()">Start the test</button>
+    </div></div>`);
+}
+
+function kwtHTML(it, n) {
+  const parts = esc(it.stem).split('___');
+  return `<div class="q"><div class="qhead"><span class="qn">${n}</span><div class="qtext">
+      <div class="kwt1">${esc(it.q)}</div>
+      <div class="kwtkey">${esc(it.key)}</div>
+      <div>${parts[0]}<input class="gapinput wide" data-k="${it.k}" autocomplete="off" autocapitalize="off" spellcheck="false" value="${esc(S.answers[it.k] || '')}" aria-label="Answer ${n}">${parts.slice(1).join('___')}</div>
+      <div class="small muted" style="margin-top:4px">Use between two and six words, including the word given.</div>
+    </div></div></div>`;
+}
+
+/* ---------- Resultados del candidato + guía personal ---------- */
+function finishViewAdv(sum, head) {
+  const d = sum.diag || { weak:[], strong:[], writing:[], speaking:[] };
+  const weak = d.weak.map((w, i) => `<div class="ind"><div class="indtop"><b>${i + 1}. ${esc(w.name)}</b><span class="pct" style="--p:${w.pct}">${w.pct}%</span></div><p>${esc(w.ind)}</p></div>`).join('')
+    || '<p class="muted">No critical indicators were detected in the objective sections. Well done!</p>';
+  const guide = d.weak.map((w, i) => `<div class="guide"><h4>${i + 1}. ${esc(w.name)}</h4>
+      <ul>${w.tips.map(t => `<li>${esc(t)}</li>`).join('')}</ul>
+      ${w.ex.length ? `<details><summary>Practice (${w.ex.length} exercises)</summary><ol>${w.ex.map(e => `<li>${esc(e[0])}<span class="ans">→ ${esc(e[1])}</span></li>`).join('')}</ol></details>` : ''}</div>`).join('');
+  const prod = [...d.writing.map(x => ({ ...x, name:'Writing · ' + x.name })), ...d.speaking.map(x => ({ ...x, name:'Speaking · ' + x.name }))]
+    .map(w => `<div class="guide"><h4>${esc(w.name)}</h4><p class="small">${esc(w.ind)}</p><ul>${w.tips.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>`).join('');
+  view(`<div class="stack report">${head}
+    <div class="card"><div class="score"><div><div class="num">${sum.overall}</div><div class="muted small">Cambridge English Scale</div></div>
+      <div><h1 style="font-size:clamp(28px,4vw,40px)">Well done, ${esc(sum.student)}!</h1><p class="muted" style="margin:6px 0 0">Your estimated level is <b>${sum.cefr}</b> (CEFR).</p></div></div>
+      <div class="scale">${ADV_BANDS.map(b => `<div style="flex:${b[2] - b[1]};background:${b[3]}">${b[0]}</div>`).join('')}<span class="marker" style="left:${advPos(sum.overall)}%" data-v="${sum.overall}"></span></div>
+      <div class="small muted" style="position:relative;height:20px">${[120,140,160,180,200,230].map(v => `<span style="position:absolute;left:${advPos(v)}%;transform:translateX(${v === 120 ? '0' : v === 230 ? '-100%' : '-50%'})">${v}</span>`).join('')}</div></div>
+    <div class="recbox"><div class="small" style="opacity:.8">Recommended exam</div><h3>${esc(sum.rec.exam)}</h3><div>${esc(sum.rec.grade)}</div>${sum.rec.note ? `<p class="small" style="opacity:.85;margin-bottom:0">${esc(sum.rec.note)}</p>` : ''}</div>
+    <div class="card">${SKILLS.map(s => { const v = sum.scores[s.k];
+      return `<div class="skillrow"><span>${s.icon} ${s.name}</span><div class="track"><div style="width:${v == null ? 0 : advPos(v)}%;background:${s.color}"></div></div><b>${v == null ? '—' : v}</b></div>`; }).join('')}
+      ${sum.speakingPending ? '<p class="small muted">Speaking will be reviewed by your teacher.</p>' : ''}
+      ${d.strong.length ? `<p class="small">Strengths: <b>${d.strong.map(x => esc(x.name) + ' (' + x.pct + '%)').join(', ')}</b></p>` : ''}</div>
+    <div class="card stack"><h2>Indicadores a mejorar <span class="muted small">/ areas to improve</span></h2>${weak}</div>
+    ${guide || prod ? `<div class="card stack"><h2>Tu guía de reforzamiento <span class="muted small">/ your practice plan</span></h2>
+      <p class="small muted">Dedica 20–30 minutos diarios, un indicador por semana, empezando por el primero.</p>${guide}${prod}</div>` : ''}
+    <div class="noprint" style="text-align:center"><button class="btn" onclick="printReport()">⬇ Download / print my report (PDF)</button>
+      <p class="small muted">A copy of this report has been sent to your email, your teacher and the exam centre. You can now close this window.</p></div></div>`);
+}
+function printReport() {
+  document.querySelectorAll('details').forEach(x => x.open = true);
+  document.body.classList.add('print-report');
+  setTimeout(() => { window.print(); document.body.classList.remove('print-report'); }, 150);
+}
+
+/* =====================================================================
+   INFORME DOCENTE (dashboard estilo Power BI) · ?report=CÓDIGO
+   ===================================================================== */
+function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = () => rej(new Error('No se pudo cargar ' + src)); document.head.appendChild(s); }); }
+async function reportView() {
+  const code = (params.get('report') || '').toUpperCase();
+  const saved = sessionStorage.getItem('bbec_access') || '';
+  if (!saved) return view(`<div class="card stack" style="max-width:520px;margin:auto"><h2>Informe del curso · ${esc(code)}</h2>
+      <p class="muted">Ingresa la clave del centro para ver el informe.</p><label class="f">Clave del centro<input id="r_access" type="password"></label>
+      <div id="r_err"></div><button class="btn" onclick="sessionStorage.setItem('bbec_access',$('#r_access').value.trim());reportView()">Ver informe</button></div>`);
+  view('<div class="spinner"></div>');
+  try {
+    const d = await api('courseData', { access:saved, code });
+    if (!window.Chart) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js');
+    S.inv = { school:d.inv.school, logo:d.inv.logo, test:d.inv.test }; S.center = d.center; renderBrand();
+    renderDashboard(d);
+  } catch (e) { sessionStorage.removeItem('bbec_access'); errorView(e.message); }
+}
+function renderDashboard(d) {
+  const st = d.stats, c = st.course, rows = d.course;
+  const sk = SKILLS.map(s => s.k);
+  const col = { uoe:'#6C4CF1', reading:'#0E9C9C', listening:'#F26B1D', writing:'#D6336C', speaking:'#239B45' };
+  const cefrCount = ADV_BANDS.map(b => rows.filter(r => r.overall != null && r.overall >= b[1] && r.overall < (b[0] === 'C2' ? 999 : b[2])).length);
+  const c1plus = rows.length ? Math.round(100 * rows.filter(r => r.overall >= 180).length / rows.length) : 0;
+  const exams = {}; rows.forEach(r => { exams[r.exam] = (exams[r.exam] || 0) + 1; });
+  const topExam = Object.entries(exams).sort((a, b) => b[1] - a[1])[0] || ['—', 0];
+  const viol = rows.reduce((a, r) => a + (r.viol || 0), 0), closed = rows.filter(r => r.reason === 'security').length;
+  const diff = k => (c[k] != null && st.level[k] != null) ? c[k] - st.level[k] : null;
+  const best = sk.filter(k => c[k] != null).sort((a, b) => c[b] - c[a]);
+  const heat = v => v == null ? '#F1F3F8' : `hsl(${Math.max(0, Math.min(130, (v - 140) * 1.6))},62%,${88 - Math.max(0, Math.min(20, (v - 140) / 4))}%)`;
+  const weakF = d.fams.slice(0, 8), strongF = d.fams.slice(-3).reverse();
+  const predBlocks = ['fce','cae','cpe'].filter(e => d.pred[e].show);
+  const lvl = d.inv.level ? `los cursos de ${esc(d.inv.level)}` : 'otros cursos';
+  const insights = [];
+  if (best.length) insights.push(`La habilidad más sólida del curso es <b>${SKILL_NAMES_ES[best[0]]}</b> (${c[best[0]]}) y la que requiere más apoyo es <b>${SKILL_NAMES_ES[best[best.length - 1]]}</b> (${c[best[best.length - 1]]}).`);
+  if (st.level.n) { const dv = c.overall - st.level.overall, pts = n => n + (n === 1 ? ' punto' : ' puntos');
+    insights.push(dv === 0 ? `El promedio global del curso (${c.overall}) es <b>igual</b> a la media de ${lvl} evaluados en la plataforma (n = ${st.level.n}).`
+      : `El promedio global del curso (${c.overall}) está <b>${dv > 0 ? pts(dv) + ' sobre' : pts(-dv) + ' bajo'}</b> la media de ${lvl} evaluados en la plataforma (${st.level.overall}, n = ${st.level.n}).`); }
+  if (weakF.length) insights.push(`Indicadores prioritarios para trabajar en clase: <b>${weakF.slice(0, 3).map(f => esc(f.name) + ' (' + f.pct + '%)').join(', ')}</b>.`);
+  insights.push(`Sugerencia de inscripción: ${Object.entries(exams).sort((a, b) => b[1] - a[1]).map(([e, n]) => `<b>${esc(e)}</b>: ${n}`).join(' · ')}.`);
+  predBlocks.forEach(e => { const p = d.pred[e], cb = d.cambridge[e]; const abc = p.pct[0] + p.pct[1] + p.pct[2], ch = cb.chile[0] + cb.chile[1] + cb.chile[2], wo = cb.world[0] + cb.world[1] + cb.world[2];
+    insights.push(`Si todo el curso rindiera <b>${cb.name}</b>, el ${abc.toFixed(0)}% lo aprobaría (Grade A–C), frente al ${ch.toFixed(0)}% de los candidatos de Chile y el ${wo.toFixed(0)}% del mundo en 2024.`); });
+  view(`<div class="dash">
+    <section class="dhead">
+      <div><div class="eyebrow">Informe de resultados · Advanced Placement Test B2–C2</div>
+        <h1>${esc(d.inv.school)} · ${esc(d.inv.group || d.inv.code)}</h1>
+        <p>${d.inv.level ? esc(d.inv.level) + ' · ' : ''}Profesor/a ${esc(d.inv.teacher || '—')} · Código ${esc(d.inv.code)} · Generado ${esc(d.generated)}</p></div>
+      <div class="noprint dbtns"><button class="btn sm" onclick="printReport()">⬇ Descargar PDF</button><button class="btn sm ghost" onclick="reportView()">↻ Actualizar</button></div>
+    </section>
+    ${rows.length ? '' : '<div class="card"><p>Aún no hay estudiantes que hayan terminado la prueba con esta invitación.</p></div>'}
+    <section class="kpis">
+      <div class="kpi" style="--k:var(--ink)"><span>👥</span><b>${rows.length}</b><small>estudiantes evaluados</small></div>
+      <div class="kpi" style="--k:var(--uoe)"><span>🎯</span><b>${c.overall ?? '—'}</b><small>promedio global · ${c.overall ? advCefr(c.overall) : ''}</small></div>
+      <div class="kpi" style="--k:var(--speaking)"><span>🏅</span><b>${c1plus}%</b><small>en nivel C1 o superior</small></div>
+      <div class="kpi" style="--k:var(--reading)"><span>📝</span><b class="kx">${esc(topExam[0])}</b><small>examen más recomendado (${topExam[1]})</small></div>
+      <div class="kpi" style="--k:var(--writing)"><span>🛡️</span><b>${viol}</b><small>incidentes · ${closed} pruebas cerradas</small></div>
+    </section>
+    <section class="grid2">
+      <div class="panel"><h3>Promedio por habilidad</h3><p class="sub">Curso comparado con ${lvl}, el colegio y todos los evaluados (Cambridge English Scale)</p><div class="cv"><canvas id="ch1"></canvas></div></div>
+      <div class="panel"><h3>Distribución por nivel MCER</h3><p class="sub">Número de estudiantes del curso en cada nivel</p><div class="cv"><canvas id="ch2"></canvas></div></div>
+    </section>
+    <section class="grid2">
+      <div class="panel"><h3>Indicadores con menor logro</h3><p class="sub">% de respuestas correctas del curso por indicador (prioridades de enseñanza)</p><div class="cv tall"><canvas id="ch3"></canvas></div></div>
+      <div class="panel"><h3>Comparación con Cambridge 2024</h3><p class="sub">Proyección: resultado probable si todo el curso rindiera cada examen, frente a los candidatos de Chile y del mundo (Cambridge English Grade Statistics 2024)</p>
+        ${predBlocks.length ? predBlocks.map(e => `<div class="cv short"><canvas id="cb_${e}"></canvas></div>`).join('') : '<p class="muted">Sin candidatos recomendados para B2 First, C1 Advanced o C2 Proficiency.</p>'}</div>
+    </section>
+    <section class="panel">
+      <h3>Resultados por estudiante</h3><p class="sub">Los colores indican el nivel en la escala (más verde = más alto)</p>
+      <div class="tablewrap"><table class="sttable"><thead><tr><th>Estudiante</th>${SKILLS.map(s => `<th>${s.icon} ${s.name}</th>`).join('')}<th>Global</th><th>MCER</th><th>Examen recomendado</th><th>Resultado probable</th><th>⚠️</th></tr></thead>
+      <tbody>${rows.slice().sort((a, b) => (b.overall || 0) - (a.overall || 0)).map(r => `<tr><td><b>${esc(r.name)}</b><br><small>${esc(r.id)} · ${esc(r.form)}</small></td>
+        ${sk.map(k => `<td class="hc" style="background:${heat(r.scores[k])}">${r.scores[k] ?? 'Pend.'}</td>`).join('')}
+        <td class="hc" style="background:${heat(r.overall)}"><b>${r.overall ?? '—'}</b></td><td>${esc(r.cefr)}</td><td>${esc(r.exam)}</td><td><small>${esc(r.grade)}</small></td>
+        <td>${r.viol ? r.viol + (r.reason === 'security' ? ' 🔒' : '') : '—'}</td></tr>`).join('')}</tbody></table></div>
+    </section>
+    <section class="grid2">
+      <div class="panel"><h3>Resumen del colegio</h3><p class="sub">Promedio global de cada curso de ${esc(d.inv.school)} que rindió la prueba B2–C2</p><div class="cv"><canvas id="ch4"></canvas></div></div>
+      <div class="panel"><h3>Conclusiones y recomendaciones</h3><ul class="insights">${insights.map(t => `<li>${t}</li>`).join('')}</ul>
+        ${strongF.length ? `<p class="sub">Fortalezas del curso: ${strongF.map(f => esc(f.name) + ' (' + f.pct + '%)').join(', ')}</p>` : ''}</div>
+    </section>
+    <p class="foot-note">Fuente de comparación internacional: Cambridge English Grade Statistics 2024 (cambridgeenglish.org). Las estadísticas de Cambridge corresponden a distribuciones de resultados por país; la columna "Curso" es una proyección a partir de esta prueba diagnóstica interna de BBEC Exam Centre, que no es un examen oficial de Cambridge. Writing y Speaking se estiman automáticamente y pueden ser moderados por el docente.</p>
+  </div>`);
+  Chart.defaults.font.family = "'Atkinson Hyperlegible','Segoe UI',sans-serif"; Chart.defaults.color = '#1B2A4A'; Chart.defaults.animation = false;
+  const series = [['Curso', c, '#1B2A4A'], ['Mismo nivel', st.level, '#6C4CF1'], ['Colegio', st.school, '#0E9C9C'], ['Todos', st.all, '#F5A524']].filter(x => x[1].n);
+  new Chart($('#ch1'), { type:'bar', data:{ labels:[...SKILLS.map(s => s.name), 'Global'], datasets: series.map(([l, o, cl]) => ({ label:l + ' (n=' + o.n + ')', data:[...sk.map(k => o[k]), o.overall], backgroundColor:cl, borderRadius:4 })) },
+    options:{ maintainAspectRatio:false, scales:{ y:{ min:120, max:230, ticks:{ stepSize:10, callback:v => v % 20 === 0 ? v : '' } } }, plugins:{ legend:{ position:'bottom' } } } });
+  new Chart($('#ch2'), { type:'doughnut', data:{ labels:ADV_BANDS.map(b => b[0]), datasets:[{ data:cefrCount, backgroundColor:ADV_BANDS.map(b => b[3]) }] },
+    options:{ maintainAspectRatio:false, cutout:'58%', plugins:{ legend:{ position:'right' } } } });
+  new Chart($('#ch3'), { type:'bar', data:{ labels:weakF.map(f => f.name), datasets:[{ label:'% de logro', data:weakF.map(f => f.pct), backgroundColor:weakF.map(f => f.pct < 50 ? '#D6336C' : f.pct < 70 ? '#F5A524' : '#239B45'), borderRadius:4 }] },
+    options:{ indexAxis:'y', maintainAspectRatio:false, scales:{ x:{ min:0, max:100, ticks:{ callback:v => v + '%' } } }, plugins:{ legend:{ display:false } } } });
+  const gcol = ['#239B45', '#0E9C9C', '#6C4CF1', '#F5A524', '#D92D20'];
+  predBlocks.forEach(e => { const p = d.pred[e], cb = d.cambridge[e];
+    new Chart($('#cb_' + e), { type:'bar', data:{ labels:[`Curso (n=${p.n})`, 'Chile 2024', 'Mundo 2024'], datasets:cb.labels.map((l, i) => ({ label:l, data:[p.pct[i], cb.chile[i], cb.world[i]], backgroundColor:gcol[i] })) },
+      options:{ indexAxis:'y', maintainAspectRatio:false, scales:{ x:{ stacked:true, max:100, ticks:{ callback:v => v + '%' } }, y:{ stacked:true, ticks:{ autoSkip:false } } }, plugins:{ title:{ display:true, text:cb.name, align:'start' }, legend:{ position:'bottom', labels:{ boxWidth:12 } } } } }); });
+  new Chart($('#ch4'), { type:'bar', data:{ labels:d.schoolGroups.map(g => g.group + ' (n=' + g.n + ')'), datasets:[{ label:'Promedio global', data:d.schoolGroups.map(g => g.overall), backgroundColor:d.schoolGroups.map(g => g.group === d.inv.group ? '#1B2A4A' : '#9AA5B8'), borderRadius:4 }] },
+    options:{ maintainAspectRatio:false, scales:{ y:{ min:120, max:230, ticks:{ stepSize:10, callback:v => v % 20 === 0 ? v : '' } } }, plugins:{ legend:{ display:false } } } });
+}
+const SKILL_NAMES_ES = { uoe:'Use of English', reading:'Reading', listening:'Listening', writing:'Writing', speaking:'Speaking' };
+
+boot();
+</script>
+</body>
+</html>
